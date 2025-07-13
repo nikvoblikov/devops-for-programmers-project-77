@@ -1,0 +1,36 @@
+# Переменные для Datadog
+datadog_api_key: "{{ vault_datadog_api_key }}" 
+datadog_site: "datadoghq.eu"
+datadog_config:
+  tags:
+    - "env:production"
+    - "service:redmine"
+  apm_config:
+    enabled: true
+  logs_enabled: true
+
+datadog_integrations:
+  docker:
+    init_config:
+    instances:
+      - url: "unix://var/run/docker.sock"
+        collect_container_metrics: true
+        
+datadog_checks:
+  http_check:
+    init_config:
+    instances:
+      - name: "Repositorium.shop HTTPS Check"
+        url: "https://repositorium.shop"
+        timeout: 60
+        method: GET                 
+        tls_verify: true        
+        tls_ignore_warning: false
+        headers:
+          Host: "repositorium.shop"
+        tags:
+          - "service:repositorium"
+          - "env:production"
+          - "monitoring:http_check"
+        collect_response_time: true
+        skip_event: false       

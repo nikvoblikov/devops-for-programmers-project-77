@@ -1,0 +1,14 @@
+vault-password-file.txt
+secret.*
+.terraform
+*.backup
+.terraform
+*/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+.vault_pass.txt
+*backend.conf
+key.json
+vault-password-file.txt
+./ansible/.ansible/

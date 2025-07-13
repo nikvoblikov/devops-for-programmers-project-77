@@ -1,0 +1,25 @@
+# Переменные для роли geerlingguy.pip
+pip_install_packages:
+  - name: docker
+  
+# Переменные для Redmine
+redmine_port: 80
+redmine_opt_folder: "/opt/redmine"
+redmine_db_username: "{{ vault_redmine_db_username }}"
+redmine_db_password: "{{ vault_redmine_db_password }}"
+redmine_db_mysql: "{{ vault_redmine_db_mysql }}"
+redmine_db_database: "{{ vault_redmine_db_database }}"
+
+# Переменные для роли geerlingguy.docker
+docker_edition: 'ce'
+docker_package: "docker-ce=24.0.7"
+docker_users: ["dobby"]
+docker_service_state: started
+docker_service_enabled: true
+docker_install_compose: false
+docker_daemon_config:
+  ipv6: false
+  log-driver: "json-file"
+  log-opts:
+    max-size: "10m"
+    max-file: "3"

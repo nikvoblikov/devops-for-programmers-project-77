@@ -1,0 +1,5 @@
+vault_redmine_db_username: dobby
+vault_redmine_db_password: g0vbl0hb0
+vault_redmine_db_mysql: rc1d-05vlm7eiv2pkm71n.mdb.yandexcloud.net
+vault_redmine_db_database: db1
+vault_datadog_api_key: some-key

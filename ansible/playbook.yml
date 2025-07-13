@@ -1,0 +1,58 @@
+- name: "Развёртывание Redmine в облаке"
+  hosts: all
+  become: true
+
+  tasks:
+    - name: "Создать директорию /opt/redmine"
+      ansible.builtin.file:
+        path: "{{ redmine_opt_folder }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      tags:
+        - install-redmine
+
+    - name: "Создать переменные из шаблона"
+      ansible.builtin.template:
+        src: env.j2
+        dest: "{{ redmine_opt_folder }}/.env"
+        owner: root
+        group: root
+        mode: "0600"
+      tags:
+        - install-redmine
+
+    - name: "Установить Redmine на ВМ"
+      # Модуль управляет инфраструктурой docker
+      community.docker.docker_container:
+        name: redmine
+        image: redmine:6.0
+        state: started
+        restart_policy: unless-stopped
+        ports:
+          - "{{ redmine_port }}:3000"
+        env_file: "{{ redmine_opt_folder }}/.env"
+        volumes:
+          - "redmine_data:/usr/src/redmine/files"
+        labels:
+          com.datadoghq.tags.service: "redmine"
+          com.datadoghq.tags.env: "production"
+      tags:
+        - install-redmine
+
+  roles:
+    - role: geerlingguy.pip
+      tags:
+        - prepare-servers
+    - role: geerlingguy.docker
+      tags:
+        - prepare-servers
+
+- name: "Настройка мониторинга Datadog"
+  hosts: webservers
+  become: true
+
+  roles:
+    - role: datadog.dd.agent
+      tags: monitoring
