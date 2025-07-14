@@ -51,3 +51,15 @@ variable "terraform-state-backed" {
   type        = string
   default = "terraform-state-backed"
 }
+
+variable "datadog_api_key" {
+  description = "Datadog API ключ"
+  type        = string
+  sensitive   = true
+}
+
+variable "datadog_app_key" {
+  description = "Datadog ключ приложения"
+  type        = string
+  sensitive   = true
+}
