@@ -291,6 +291,10 @@ resource "datadog_monitor" "web_server_status" {
     critical = 1
     warning  = 1
   }
+  
+  notify_no_data    = true
+  no_data_timeframe = 10
+  renotify_interval = 0
 }
 
 # Монитор нагрузки CPU
@@ -304,6 +308,9 @@ resource "datadog_monitor" "web_cpu_usage" {
     critical = 80
     warning  = 70
   }
+  
+  notify_no_data    = true
+  no_data_timeframe = 10
 }
 
 output "load_balancer_external_ip" {
