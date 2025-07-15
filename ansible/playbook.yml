@@ -5,13 +5,13 @@
 
   tasks:
     - name: "Установка Docker"
-      include_role:
+      ansible.builtin.include_role:
         name: geerlingguy.docker
       tags:
         - prepare-servers
 
     - name: "Создать директорию для Redmine"
-      file:
+      ansible.builtin.file:
         path: "{{ redmine_opt_folder }}"
         state: directory
         owner: root
@@ -21,7 +21,7 @@
         - install-redmine
 
     - name: "Создать .env файл конфигурации"
-      template:
+      ansible.builtin.template:
         src: env.j2
         dest: "{{ redmine_opt_folder }}/.env"
         owner: root
@@ -49,7 +49,7 @@
         - install-redmine
 
   handlers:
-    - name: restart redmine
+    - name: "Restart redmine"
       community.docker.docker_container:
         name: redmine
         state: restarted
