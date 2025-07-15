@@ -1,4 +1,3 @@
 *.backup
-.terraform
+.terraform.*
 secret.*
-.terraform.lock.net
