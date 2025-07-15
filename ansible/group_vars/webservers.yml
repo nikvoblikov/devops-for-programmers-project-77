@@ -1,5 +1,5 @@
 # Переменные для Datadog
-datadog_api_key: "{{ vault_datadog_api_key }}" 
+datadog_api_key: "{{ vault_datadog_api_key }}"
 datadog_site: "datadoghq.eu"
 datadog_config:
   tags:
@@ -23,8 +23,8 @@ datadog_checks:
       - name: "Repositorium.shop HTTPS Check"
         url: "https://repositorium.shop"
         timeout: 60
-        method: GET                 
-        tls_verify: true        
+        method: GET
+        tls_verify: true
         tls_ignore_warning: false
         headers:
           Host: "repositorium.shop"
@@ -33,4 +33,5 @@ datadog_checks:
           - "env:production"
           - "monitoring:http_check"
         collect_response_time: true
-        skip_event: false       
+        skip_event: false
+        

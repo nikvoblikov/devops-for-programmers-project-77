@@ -10,5 +10,4 @@ secret.*
 .vault_pass.txt
 *backend.conf
 key.json
-vault-password-file.txt
 ./ansible/.ansible/
