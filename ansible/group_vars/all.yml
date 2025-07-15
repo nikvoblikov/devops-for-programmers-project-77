@@ -3,12 +3,9 @@ pip_install_packages:
   - name: docker
   
 # Переменные для Redmine
-redmine_port: 80
+redmine_port: 3000
 redmine_opt_folder: "/opt/redmine"
-redmine_db_username: "{{ vault_redmine_db_username }}"
-redmine_db_password: "{{ vault_redmine_db_password }}"
-redmine_db_mysql: "{{ vault_redmine_db_mysql }}"
-redmine_db_database: "{{ vault_redmine_db_database }}"
+
 
 # Переменные для роли geerlingguy.docker
 docker_edition: 'ce'

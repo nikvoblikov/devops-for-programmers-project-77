@@ -187,6 +187,14 @@ resource "yandex_cm_certificate" "app_cert" {
   }
 }
 
+resource "yandex_vpc_address" "alb_ip" {
+  name = "load-balancer-ip"
+  
+  external_ipv4_address {
+    zone_id = var.yc_zone
+  }
+}
+
 resource "yandex_alb_load_balancer" "app-lb" {
   name = "app-lb"
   description = "Балансер уровня приложения"
@@ -206,7 +214,9 @@ resource "yandex_alb_load_balancer" "app-lb" {
       name = "http-listener"
       endpoint {
         address {
-          external_ipv4_address {}
+          external_ipv4_address {
+            address = yandex_vpc_address.alb_ip.external_ipv4_address[0].address
+          }
         }
         ports = [80]
       }
@@ -221,7 +231,9 @@ resource "yandex_alb_load_balancer" "app-lb" {
     name = "https-listener"
     endpoint {
       address {
-        external_ipv4_address {}
+        external_ipv4_address {
+          address = yandex_vpc_address.alb_ip.external_ipv4_address[0].address
+        }
       }
       ports = [443]
     }
@@ -311,25 +323,4 @@ resource "datadog_monitor" "web_cpu_usage" {
   
   notify_no_data    = true
   no_data_timeframe = 10
-}
-
-output "load_balancer_external_ip" {
-  description = "Публичный IP балансировщика для доступа к приложению"
-  value       = try(yandex_alb_load_balancer.app-lb.listener[0].endpoint[0].address[0].external_ipv4_address[0].address, "")
-}
-
-# Создание бакета для хранения состояния Terraform
-resource "yandex_storage_bucket" "terraform_state" {
-  bucket     = var.terraform-state-backed
-  access_key = var.yc_storage_access_key
-  secret_key = var.yc_storage_secret_key
-  acl        = "private"
-
-  versioning {
-    enabled = true
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
 }

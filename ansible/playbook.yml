@@ -1,10 +1,17 @@
-- name: "Развёртывание Redmine в облаке"
+---
+- name: "Развёртывание Redmine с SQLite"
   hosts: all
   become: true
 
   tasks:
-    - name: "Создать директорию /opt/redmine"
-      ansible.builtin.file:
+    - name: "Установка Docker"
+      include_role:
+        name: geerlingguy.docker
+      tags:
+        - prepare-servers
+
+    - name: "Создать директорию для Redmine"
+      file:
         path: "{{ redmine_opt_folder }}"
         state: directory
         owner: root
@@ -13,8 +20,8 @@
       tags:
         - install-redmine
 
-    - name: "Создать переменные из шаблона"
-      ansible.builtin.template:
+    - name: "Создать .env файл конфигурации"
+      template:
         src: env.j2
         dest: "{{ redmine_opt_folder }}/.env"
         owner: root
@@ -23,8 +30,7 @@
       tags:
         - install-redmine
 
-    - name: "Установить Redmine на ВМ"
-      # Модуль управляет инфраструктурой docker
+    - name: "Запустить контейнер Redmine с SQLite"
       community.docker.docker_container:
         name: redmine
         image: redmine:6.0
@@ -34,12 +40,19 @@
           - "{{ redmine_port }}:3000"
         env_file: "{{ redmine_opt_folder }}/.env"
         volumes:
-          - "redmine_data:/usr/src/redmine/files"
+          - "redmine_files:/usr/src/redmine/files"
+          - "redmine_db:/usr/src/redmine/db"
         labels:
           com.datadoghq.tags.service: "redmine"
-          com.datadoghq.tags.env: "production"
+          com.datadoghq.tags.env: "development"
       tags:
         - install-redmine
+
+  handlers:
+    - name: restart redmine
+      community.docker.docker_container:
+        name: redmine
+        state: restarted
 
   roles:
     - role: geerlingguy.pip
@@ -48,11 +61,3 @@
     - role: geerlingguy.docker
       tags:
         - prepare-servers
-
-- name: "Настройка мониторинга Datadog"
-  hosts: webservers
-  become: true
-
-  roles:
-    - role: datadog.dd.agent
-      tags: monitoring
