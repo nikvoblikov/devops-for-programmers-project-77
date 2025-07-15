@@ -1,0 +1,4 @@
+*.backup
+.terraform.*
+secret.*
+.terraform.lock.hcl
