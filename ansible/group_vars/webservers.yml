@@ -34,4 +34,4 @@ datadog_checks:
           - "monitoring:http_check"
         collect_response_time: true
         skip_event: false
-        
+ 
